@@ -61,9 +61,10 @@ const Verify = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-          Verify Certificate
-        </h1>
+        <div className="text-center mb-10">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-green-700 mb-2 tracking-tight drop-shadow">Verify Certificate</h1>
+          <p className="text-gray-500 text-lg">Instantly check certificate authenticity using OCR & QR</p>
+        </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="mb-6">
@@ -73,14 +74,48 @@ const Verify = () => {
             </p>
           </div>
 
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 mb-4">
-            <input
-              type="file"
-              accept="image/*,.pdf"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-            />
-          </div>
+          {/* Drag-and-drop area or file preview */}
+          {!file ? (
+            <div
+              className={`relative border-2 border-dashed rounded-xl mb-4 p-8 flex flex-col items-center justify-center transition-colors duration-200 ${loading ? 'border-green-400 bg-green-50' : 'border-gray-300 bg-gray-50'}`}
+              onDragEnter={e => {e.preventDefault();e.stopPropagation();}}
+              onDragOver={e => {e.preventDefault();e.stopPropagation();}}
+              onDrop={e => {
+                e.preventDefault();e.stopPropagation();
+                const dropped = e.dataTransfer.files[0];
+                setFile(dropped);
+                setError(null);
+                setResult(null);
+              }}
+              onClick={() => document.getElementById('verify-file-input').click()}
+              style={{ cursor: 'pointer' }}
+            >
+              <input
+                id="verify-file-input"
+                type="file"
+                accept="image/*,.pdf"
+                onChange={handleFileChange}
+                className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                tabIndex={-1}
+              />
+              <div className="flex flex-col items-center pointer-events-none">
+                <div className="mb-2 animate-pulse-slow">
+                  <svg className="w-12 h-12 text-green-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16v2a2 2 0 002 2h6a2 2 0 002-2v-2M12 12v6m0 0l-4-4m4 4l4-4M12 4v8" /></svg>
+                </div>
+                <span className="text-green-600 font-semibold">Drag & drop or click to select a file</span>
+                <span className="text-gray-400 text-xs mt-1">PDF, JPG, PNG (max 10MB)</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4 mt-4 bg-white rounded-lg shadow p-3 border border-green-100">
+              <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a2 2 0 10-4 0v1.083A6 6 0 004 11v3.159c0 .538-.214 1.055-.595 1.436L2 17h5m8 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+              <div className="flex-1">
+                <span className="block font-medium text-gray-800">{file.name}</span>
+                <span className="block text-xs text-gray-400">{file.type.toUpperCase()} &bull; {(file.size/1024/1024).toFixed(2)} MB</span>
+              </div>
+              <button onClick={e => {e.stopPropagation(); setFile(null);}} className="ml-2 text-red-400 hover:text-red-600 transition">Remove</button>
+            </div>
+          )}
 
           <button
             onClick={handleVerify}

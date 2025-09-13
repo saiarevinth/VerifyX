@@ -57,7 +57,10 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Dashboard</h1>
+        <div className="text-center mb-10">
+  <h1 className="text-4xl md:text-5xl font-extrabold text-indigo-700 mb-2 tracking-tight drop-shadow">Dashboard</h1>
+  <p className="text-gray-500 text-lg">Analytics and trends for certificate uploads and verifications</p>
+</div>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
